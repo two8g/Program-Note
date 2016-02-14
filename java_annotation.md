@@ -7,6 +7,7 @@
 ### 基本语法
 
 注解定义看起来很像接口的定义。事实上，与其他任何接口一样，注解也将会编译成class文件。
+
 ```JAVA
 @Target(ElementType.Method)
 @Retention(RetentionPolicy.RUNTIME)
@@ -35,15 +36,10 @@ public @interface Test {}
 - 注解元素可用的类型如下：
 
     - 所有基本类型（int,float,boolean,byte,double,char,long,short）
-
     - String
-
     - Class
-
     - enum
-
     - Annotation
-
     - 以上类型的数组
 
     如果使用了其他类型，那编译器就会报错。也不允许使用任何包装类型。注解也可以作为元素的类型，也就是注解可以嵌套。元素的修饰符，只能用public或default。
@@ -70,6 +66,7 @@ public @interface MockNull {
 ### 快捷方式
 
 何为快捷方式呢？先来看下springMVC中的Controller注解
+
 ```JAVA
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
@@ -99,6 +96,7 @@ public class MockController { }
 **TYPE_PARAMETER和TYPE_USE**
 
 在JDK1.8中ElementType多了两个枚举成员，**TYPE_PARAMETER和TYPE_USE**，他们都是用来限定哪个类型可以进行注解。举例来说，如果想要对泛型的类型参数进行注解：
+
 ```JAVA
 public class AnnotationTypeParameter<@TestTypeParam T> {}
 ```
@@ -111,12 +109,15 @@ public @interface TestTypeParam {}
 ```
 
 **ElementType.TYPE_USE**用于标注各种类型，因此上面的例子也可以将**TYPE_PARAMETER**改为**TYPE_USE**，一个注解被设置为**TYPE_USE**，只要是类型名称，都可以进行注解。例如有如下注解定义：
+
 ```JAVA
 @Target(ElementType.TYPE_USE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Test {}
 ```
+
 那么以下的使用注解都是可以的:
+
 ```JAVA
 List<@Test Comparable> list1 = new ArrayList<>();
 List<? extends Comparable> list2 = new ArrayList<@Test Comparable>();
@@ -125,15 +126,19 @@ text = (@Test String)new Object();
 java.util. @Test Scanner console;
 console = new java.util.@Test Scanner(System.in);
 ```
+
 PS：以上@Test注解都是在类型的右边，要注意区分1.8之前的枚举成员，例如：
 
+```JAVA
 @Test java.lang.String text;
+```
 
 在上面这个例子中，显然是在进行text变量标注，所以还使用当前的@Target会编译错误，应该加上ElementType.LOCAL_VARIABLE。
 
-@Repeatable注解
+#### @Repeatable注解
 
-@Repeatable注解是JDK1.8新加入的，从名字意思就可以大概猜出他的意思（可重复的）。可以在同一个位置重复相同的注解。举例：
+**@Repeatable**注解是JDK1.8新加入的，从名字意思就可以大概猜出他的意思（可重复的）。可以在同一个位置重复相同的注解。举例：
+
 ```JAVA
 @Target(ElementType.TYPE)
 
@@ -145,18 +150,24 @@ String [] value();
 
 }
 ```
+
 如下进行注解使用:
+
 ```JAVA
 @Filter({"/admin","/main"})
 public class MainFilter { }
 ```
+
 换一种风格:
+
 ```JAVA
 @Filter("/admin")
 @Filter("/main")
 public class MainFilter {}
 ```
+
 在JDK1.8还没出现之前，没有办法到达这种“风格”，使用1.8，可以如下定义@Filter：
+
 ```JAVA
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -175,16 +186,17 @@ public @interface Filters {
 
 }
 ```
+
 实际上这是编译器的优化，使用@Repeatable时告诉编译器，使用@Filters来作为收集重复注解的容器，而每个@Filter存储各自指定的字符串值。
 
 JDK1.8在AnnotatedElement接口新增了getDeclaredAnnotationsByType和getAnnotationsByType，在指定@Repeatable的注解时，会寻找重复注解的容器中。相对于，getDeclaredAnnotation和getAnnotation就不会处理@Repeatable注解。举例如下：
+
 ```JAVA
 @Filter("/admin")
 @Filter("/filter")
 public class FilterClass {
 
     public static void main(String[] args) {
-
         Class<FilterClass> filterClassClass = FilterClass.class;
 
         Filter[] annotationsByType = filterClassClass.getAnnotationsByType(Filter.class);
@@ -197,9 +209,9 @@ public class FilterClass {
 
         System.out.println(filterClassClass.getAnnotation(Filter.class));
     }
-
 }
 ```
+
 日志如下:
 ```
 /admin

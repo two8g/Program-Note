@@ -4,7 +4,6 @@ Java注解全面解析
 
 出处：[Java注解全面解析](http://9leg.com/java/2016/01/21/java-annotation.html)
 
-
 1.基本语法
 
 注解定义看起来很像接口的定义。事实上，与其他任何接口一样，注解也将会编译成class文件。

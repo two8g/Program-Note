@@ -2,7 +2,7 @@
 
 ## Java注解全面解析
 
-出处：[Java注解全面解析](http://9leg.com/java/2016/01/21/java-annotation.html)
+原文出处：[Java注解全面解析](http://9leg.com/java/2016/01/21/java-annotation.html)
 
 ### 基本语法
 

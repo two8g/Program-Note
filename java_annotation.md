@@ -50,9 +50,10 @@ public @interface Test {}
 
 - 默认值限制
 
-编译器对元素的默认值有些过分挑剔。首先，元素不能有不确定的值。也就是说，元素必须要么具有默认值，要么在使用注解时提供元素的值。
+    编译器对元素的默认值有些过分挑剔。首先，元素不能有不确定的值。也就是说，元素必须要么具有默认值，要么在使用注解时提供元素的值。
 
-其次，对于非基本类型的元素，无论是在源代码中声明，还是在注解接口中定义默认值，都不能以null作为值。这就是限制，这就造成处理器很难表现一个元素的存在或缺失状态，因为每个注解的声明中，所有的元素都存在，并且都具有相应的值。为了绕开这个限制，只能定义一些特殊的值，例如空字符串或负数，表示某个元素不存在。
+    其次，对于非基本类型的元素，无论是在源代码中声明，还是在注解接口中定义默认值，都不能以null作为值。这就是限制，这就造成处理器很难表现一个元素的存在或缺失状态，因为每个注解的声明中，所有的元素都存在，并且都具有相应的值。为了绕开这个限制，只能定义一些特殊的值，例如空字符串或负数，表示某个元素不存在。
+
 
 ```
 @Target(ElementType.Method)
@@ -135,7 +136,7 @@ PS：以上@Test注解都是在类型的右边，要注意区分1.8之前的枚�
 @Repeatable注解
 
 @Repeatable注解是JDK1.8新加入的，从名字意思就可以大概猜出他的意思（可重复的）。可以在同一个位置重复相同的注解。举例：
-
+```
 @Target(ElementType.TYPE)
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -145,23 +146,23 @@ public @interface Filter {
 String [] value();
 
 }
-
+```
 如下进行注解使用:
-
+```
 @Filter({“/admin”,”/main”})
 
 public class MainFilter { }
-
+```
 换一种风格:
-
+```
 @Filter(“/admin”)
 
 @Filter(“/main”)
 
 public class MainFilter {}
-
+```
 在JDK1.8还没出现之前，没有办法到达这种“风格”，使用1.8，可以如下定义@Filter：
-
+```
 @Target(ElementType.TYPE)
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -183,11 +184,11 @@ public @interface Filters {
 Filter [] value();
 
 }
-
+```
 实际上这是编译器的优化，使用@Repeatable时告诉编译器，使用@Filters来作为收集重复注解的容器，而每个@Filter存储各自指定的字符串值。
 
 JDK1.8在AnnotatedElement接口新增了getDeclaredAnnotationsByType和getAnnotationsByType，在指定@Repeatable的注解时，会寻找重复注解的容器中。相对于，getDeclaredAnnotation和getAnnotation就不会处理@Repeatable注解。举例如下：
-
+```
 @Filter(“/admin”)
 
 @Filter(“/filter”)
@@ -215,11 +216,12 @@ System.out.println(filterClassClass.getAnnotation(Filter.class));
 }
 
 }
-
+```
 日志如下:
-
+```
 /admin
 
 /filter
 
 null
+```

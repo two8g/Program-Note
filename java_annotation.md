@@ -32,65 +32,62 @@ public @interface Test {}
 
 ### 注解元素
 
-– 注解元素可用的类型如下：
+- 注解元素可用的类型如下：
 
-– 所有基本类型（int,float,boolean,byte,double,char,long,short）
+    - 所有基本类型（int,float,boolean,byte,double,char,long,short）
 
-– String
+    - String
 
-– Class
+    - Class
 
-– enum
+    - enum
 
-– Annotation
+    - Annotation
 
-– 以上类型的数组
+    - 以上类型的数组
 
-如果使用了其他类型，那编译器就会报错。也不允许使用任何包装类型。注解也可以作为元素的类型，也就是注解可以嵌套。
+如果使用了其他类型，那编译器就会报错。也不允许使用任何包装类型。注解也可以作为元素的类型，也就是注解可以嵌套。元素的修饰符，只能用public或default。
 
-元素的修饰符，只能用public或default。
-
-– 默认值限制
+- 默认值限制
 
 编译器对元素的默认值有些过分挑剔。首先，元素不能有不确定的值。也就是说，元素必须要么具有默认值，要么在使用注解时提供元素的值。
 
 其次，对于非基本类型的元素，无论是在源代码中声明，还是在注解接口中定义默认值，都不能以null作为值。这就是限制，这就造成处理器很难表现一个元素的存在或缺失状态，因为每个注解的声明中，所有的元素都存在，并且都具有相应的值。为了绕开这个限制，只能定义一些特殊的值，例如空字符串或负数，表示某个元素不存在。
 
+```
 @Target(ElementType.Method)
-
 @Retention(RetentionPolicy.RUNTIME)
-
 public @interface MockNull {
 
-public int id() default -1;
+    public int id() default -1;
 
-public String description() default “”;
+    public String description() default "";
 
 }
+```
 
-3. 快捷方式
+### 快捷方式
 
 何为快捷方式呢？先来看下springMVC中的Controller注解
-
+```
 @Target({ElementType.TYPE})
-
 @Retention(RetentionPolicy.RUNTIME)
-
 @Documented
-
 @Component
-
 public @interface Controller {
 
-String value() default “”;
+    String value() default "";
 
 }
+```
+
 
 可以看见Target应用于类、接口、注解和枚举上，Retention策略为RUNTIME运行时期，有一个String类型的value元素。平常使用的时候基本都是这样的：
 
+```
 @Controller(“/your/path”)
-
 public class MockController { }
+```
 
 这就是快捷方式，省略了名－值对的这种语法。下面给出详细解释：
 
@@ -106,34 +103,29 @@ public class AnnotationTypeParameter<@TestTypeParam T> {}
 
 那么，在定义@TestTypeParam时，必须在@Target设置ElementType.TYPE_PARAMETER，表示这个注解可以用来标注类型参数。例如：
 
+```
 @Target(ElementType.TYPE_PARAMETER)
 
 @Retention(RetentionPolicy.RUNTIME)
 
 public @interface TestTypeParam {}
+```
 
 ElementType.TYPE_USE用于标注各种类型，因此上面的例子也可以将TYPE_PARAMETER改为TYPE_USE，一个注解被设置为TYPE_USE，只要是类型名称，都可以进行注解。例如有如下注解定义：
-
+```
 @Target(ElementType.TYPE_USE)
-
 @Retention(RetentionPolicy.RUNTIME)
-
 public @interface Test {}
-
+```
 那么以下的使用注解都是可以的:
-
+```
 List<@Test Comparable> list1 = new ArrayList<>();
-
 List<? extends Comparable> list2 = new ArrayList<@Test Comparable>();
-
 @Test String text;
-
 text = (@Test String)new Object();
-
 java.util. @Test Scanner console;
-
 console = new java.util.@Test Scanner(System.in);
-
+```
 PS：以上@Test注解都是在类型的右边，要注意区分1.8之前的枚举成员，例如：
 
 @Test java.lang.String text;
